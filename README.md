@@ -1,6 +1,8 @@
 # LinuxCNC Config Editor
 This is a GUI editor of configuration files (INI) for [LinuxCNC](http://linuxcnc.org/). It’s not designed for generating your CNC machine’s configuration like [Stepconf](http://linuxcnc.org/docs/html/config/stepconf.html) or [PNCconf](http://linuxcnc.org/docs/html/config/pncconf.html) but rather a tool for helping you edit the configuration file after the fact.
 
+![LinuxCNC Config Editor](images/LinuxCNC_Config_Editor.png)
+
 ## DISCLAIMER
 
 **THE AUTHORS OF THIS SOFTWARE ACCEPT ABSOLUTELY NO LIABILITY FOR ANY
