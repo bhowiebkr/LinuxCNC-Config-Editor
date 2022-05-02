@@ -5,12 +5,13 @@ import os
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 from lib.linuxcnc_config import LinuxCNCConfig
 from lib.linuxcnc_doc_reader import LinuxCNCDocs
 
 
-DEBUG = False
+DEBUG = True
 
 Docs = LinuxCNCDocs()
 
@@ -73,12 +74,6 @@ class TableModel(QAbstractTableModel):
             ]
             self._data.edit_variable(self.section, variable, value)
             return True
-        # elif role == Qt.ToolTipRole:
-        #     variable = self._data.get_variables(self.section)[index.row()][
-        #         index.column() - 1
-        #     ]
-        #     tip = Docs.get_variable_docs(self.section, variable)
-        #     return tip
 
     def flags(self, index):
         return Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable
@@ -104,8 +99,14 @@ class SectionTab(QWidget):
 
         # Widgets
         clean_name = self.name[1:-1].split("_")[0]  # just get the main name
-        self.description = QLabel(Docs.get_section_doc(section=clean_name))
-        self.description.setWordWrap(True)
+        # self.description = QLabel(Docs.get_section_doc(section=clean_name))
+        self.description = QWebEngineView()
+        # self.description.setWordWrap(True)
+        html = Docs.get_section_doc(section=clean_name)
+        local_url = QUrl.fromLocalFile(os.path.realpath(__file__))
+        print("local URL:", local_url)
+        self.description.setHtml(html, local_url)
+
         self.table = QTableView()
         self.table.setModel(self.model)
         self.table.verticalHeader().setVisible(False)
@@ -178,6 +179,9 @@ class Editor(QWidget):
         load_btn.clicked.connect(self.load_config)
         save_btn.clicked.connect(self.save_config)
         self.filter_line.textChanged.connect(self.upate_section_filter)
+
+        if DEBUG:
+            self.load_config()
 
     def upate_section_filter(self):
         f = self.filter_line.text().upper().split(",")
