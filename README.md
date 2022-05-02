@@ -31,3 +31,5 @@ This tool currently only requires **PyQt5** to run. For future changes install d
 Simply run the Python script with the following command:
 
 `python3 LinuxCNC_Config_Editor.py`
+
+In the file `LinuxCNC_Config_Editor.py` there is a variaable **DEBUG** make sure it's set to false if you don't want it defaulting to the example file. I'll fix this with some automation at a later date.
