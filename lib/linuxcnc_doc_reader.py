@@ -13,6 +13,19 @@ class LinuxCNCDocs(object):
             self.data = json.load(f)
 
     def get_section_doc(self, section):
+        # Try to get the docs from HTML
+        html_path = os.path.join(
+            os.path.join(os.path.dirname(__file__)), f"{section}.html"
+        )
+        if os.path.exists(html_path):
+            html = None
+            with open(html_path) as f:
+                html = f.read()
+
+            if html:
+                return html
+
+        # Try to get the docs from json
         try:
             docs = self.data[section]["description"]
             return docs
@@ -21,8 +34,6 @@ class LinuxCNCDocs(object):
                 print("error:", e)
 
     def get_variable_docs(self, section, variable):
-        print("get_variable_docs")
-        print("section:", section, "variable:", variable)
         try:
             docs = self.data[section]["variables"][variable]
             docs = f"<b>{variable}</b><br>{docs}"
@@ -30,4 +41,4 @@ class LinuxCNCDocs(object):
             return docs
         except KeyError as e:
             if DEBUG:
-                print("error:", e)
+                print("Section:", section, "missing:", e)
