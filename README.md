@@ -1,5 +1,5 @@
 # LinuxCNC Config Editor
-This is a GUI editor of configuration files (INI) for LinuxCNC. It’s not designed for generating your CNC machine’s configuration like Stepconf or PNCconf but rather a tool for helping you edit the configuration file after the fact.
+This is a GUI editor of configuration files (INI) for [LinuxCNC](http://linuxcnc.org/). It’s not designed for generating your CNC machine’s configuration like [Stepconf](http://linuxcnc.org/docs/html/config/stepconf.html) or [PNCconf](http://linuxcnc.org/docs/html/config/pncconf.html) but rather a tool for helping you edit the configuration file after the fact.
 
 ## DISCLAIMER
 
@@ -21,7 +21,7 @@ This software is released under the GPLv2 license.
 See the file LICENSE.md for more details.
 
 ## Installation
-This tool currently only requires PyQt5 to run. For future changes install dependencies by the following:
+This tool currently only requires **PyQt5** to run. For future changes install dependencies by the following:
 
 `pip3 install -r requirements.txt`
 
