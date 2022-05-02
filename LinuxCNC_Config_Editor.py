@@ -10,7 +10,7 @@ from lib.linuxcnc_config import LinuxCNCConfig
 from lib.linuxcnc_doc_reader import LinuxCNCDocs
 
 
-DEBUG = True
+DEBUG = False
 
 Docs = LinuxCNCDocs()
 
@@ -133,7 +133,7 @@ class Editor(QWidget):
         super(Editor, self).__init__(parent)
         self.setWindowTitle("LinuxCNC Config Editor")
 
-        self.settings = QSettings("LinuxCNC_editor", "LinuxCNC_editor")
+        self.settings = QSettings("LinuxCNC_Config_Editor", "LinuxCNC_Config_Editor")
         self.config = None
 
         # Layout
@@ -187,7 +187,9 @@ class Editor(QWidget):
     def save_config(self):
 
         if DEBUG:
-            self.config.write(save_path="example_config\cnc_machine_DEBUG.ini")
+            self.config.write(
+                save_path=os.path.join("example_config", "cnc_machine_DEBUG.ini")
+            )
 
         else:
             dialog = QFileDialog.getSaveFileName(
@@ -206,7 +208,9 @@ class Editor(QWidget):
 
         # Open the configuration file
         if DEBUG:
-            self.config = LinuxCNCConfig("example_config\cnc_machine.ini")
+            self.config = LinuxCNCConfig(
+                os.path.join("example_config", "cnc_machine.ini")
+            )
 
         else:
             dialog = QFileDialog.getOpenFileName(
@@ -240,7 +244,7 @@ class Editor(QWidget):
                     self.tabs.addTab(tab, tab.get_nice_name())
 
     def closeEvent(self, event):
-        self.settings = QSettings("LinuxCNC_editor", "LinuxCNC_editor")
+        self.settings = QSettings("LinuxCNC_Config_Editor", "LinuxCNC_Config_Editor")
         self.settings.setValue("geometry", self.saveGeometry())
         QWidget.closeEvent(self, event)
 
