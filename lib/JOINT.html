@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+</style>
+
+<body>
+    <h1>JOINT Section</h1>
+
+    <p>The joint section is a combination of multiple chapters in the docs (Homing, Servo, Stepper, Timing, etc.)</p>
+
+    <h2>Homing</h2>
+    <p>Homing seems simple enough - just move each joint to a known location, and set LinuxCNC’s internal variables
+        accordingly. However, different machines have different requirements, and homing is actually quite complicated
+    </p>
+    <p>See the <a href="https://linuxcnc.org/docs/2.6/html/config/ini_homing.html#cha:homing-configuratio">doc on
+            homing</a> for more info on homing </p>
+    <h3>Homing Sequence</h3>
+    <p>There are four possible homing sequences defined by the sign of SEARCH_VEL and LATCH_VEL, along with the
+        associated configuration parameters as shown in the following table. Two basic conditions exist, SEARCH_VEL and
+        LATCH_VEL are the same sign or they are opposite signs. For a more detailed description of what each
+        configuration parameter does, see the following section.</p>
+
+    <img src="images/emc2-motion-homing-diag.png">
+
+    <h2>TIMING</h2>
+    <p>There are five timing parameters which control the output waveform. No step type uses all five, and only those
+        which will be used are exported to HAL. The values of these parameters are in nano-seconds, so no recalculation
+        is needed when changing thread periods. In the timing diagrams that follow, they are identfied by the following
+        numbers:</p>
+
+    <ol>
+        <li>StepLen</li>
+        <li>StepSpace</li>
+        <li>DirHold</li>
+        <li>DirSetup</li>
+        <li>DirDelay</li>
+    </ol>
+
+    <p>For step type 0, timing parameters 1 thru 4 are used. The following timing diagram shows the output waveforms,
+        and what each parameter adjusts.</p>
+
+    <img src="images/step_type_0.png">
+
+    <p>For step type 1, timing parameters 1, 2, and 5 are used. The following timing diagram shows the output waveforms,
+        and what each parameter adjusts.
+    </p>
+
+    <img src="images/step_type_1.png">
+
+    <p>For step types 2 and higher, the exact pattern of the outputs depends on the step type (see the HAL manual for a
+        full listing). The outputs change from one state to another at a minimum interval of steplen. When a direction
+        change occurs, the minimum time between the last step in one direction and the first in the other direction is
+        the sum of steplen and dirdelay.</p>
+
+</body>
+
+</html>
