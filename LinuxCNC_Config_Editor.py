@@ -9,6 +9,7 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 from lib.linuxcnc_config import LinuxCNCConfig
 from lib.linuxcnc_doc_reader import LinuxCNCDocs
+from lib.vel_acc_tool import VelAccTool
 
 
 DEBUG = False
@@ -187,6 +188,12 @@ class Editor(QMainWindow):
         file_menu.addActions(file_actions)
 
         tool_menu = self.menuBar().addMenu('Tools')
+        tool_actions = []
+        velocity_acceleration = QAction('Velocity and Acceleration', self)
+        velocity_acceleration.triggered.connect(self.vel_acc_tool)
+        tool_actions.append(velocity_acceleration)
+
+        tool_menu.addActions(tool_actions)
 
 
         # Add Widgets
@@ -198,6 +205,10 @@ class Editor(QMainWindow):
 
         if DEBUG:
             self.load_config()
+
+    def vel_acc_tool(self):
+        vel_tool = VelAccTool()
+        vel_tool.exec()
 
     def upate_section_filter(self):
         f = self.filter_line.text().upper().split(",")
