@@ -31,7 +31,8 @@ class LinuxCNCDocs(object):
             return docs
         except KeyError as e:
             if DEBUG:
-                print("error:", e)
+                pass
+                #print("error:", e)
 
     def get_variable_docs(self, section, variable):
         try:
