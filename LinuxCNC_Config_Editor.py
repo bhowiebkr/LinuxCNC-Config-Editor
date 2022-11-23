@@ -98,6 +98,8 @@ class SectionTab(QWidget):
         self.setLayout(main_layout)
 
         # Widgets
+        self.splitter = QSplitter()
+        self.splitter.setOrientation(Qt.Vertical)
         clean_name = self.name[1:-1].split("_")[0]  # just get the main name
         # self.description = QLabel(Docs.get_section_doc(section=clean_name))
         self.description = QWebEngineView()
@@ -116,8 +118,11 @@ class SectionTab(QWidget):
         self.table.horizontalHeader().setStretchLastSection(True)
 
         # add widgets
-        main_layout.addWidget(self.description)
-        main_layout.addWidget(self.table)
+        main_layout.addWidget(self.splitter)
+        self.splitter.addWidget(self.description)
+        self.splitter.addWidget(self.table)
+        self.splitter.setSizes([30,3])
+
 
         # self.load_values()
 
@@ -129,7 +134,7 @@ class SectionTab(QWidget):
         return self.nice_name(self.name)
 
 
-class Editor(QWidget):
+class Editor(QMainWindow):
     def __init__(self, parent=None):
         super(Editor, self).__init__(parent)
         self.setWindowTitle("LinuxCNC Config Editor")
@@ -140,9 +145,10 @@ class Editor(QWidget):
         self.config = None
 
         # Layout
+        main_widget = QWidget()
+        self.setCentralWidget(main_widget)
         main_layout = QHBoxLayout()
-        self.setLayout(main_layout)
-        btn_layout = QVBoxLayout()
+        main_widget.setLayout(main_layout)
         data_layout = QVBoxLayout()
 
         try:
@@ -156,33 +162,38 @@ class Editor(QWidget):
             )
 
         # Widgets
-        load_btn = QPushButton("Load Config (INI)")
-        save_btn = QPushButton("Save Config (INI)")
         self.tabs = QTabWidget()
         self.filter_line = QLineEdit()
         filter_Layout = QHBoxLayout()
         filter_Layout.addWidget(QLabel("Filter Sections"))
         filter_Layout.addWidget(self.filter_line)
 
-        btns = [load_btn, save_btn]
+        # Menu
+        file_menu = self.menuBar().addMenu('File')
 
-        for btn in btns:
-            btn.setFixedHeight(40)
+        file_actions = []
+        open = QAction('Open', self)
+        open.triggered.connect(self.load_config)
+        file_actions.append(open)
+
+        save = QAction('Save', self)
+        save.triggered.connect(self.save_config)
+        file_actions.append(save)
+
+        exit = QAction('Exit', self)
+        exit.triggered.connect(self.close)
+        file_actions.append(exit)
+
+        file_menu.addActions(file_actions)
+
+        tool_menu = self.menuBar().addMenu('Tools')
+
 
         # Add Widgets
-        main_layout.addLayout(btn_layout)
         main_layout.addLayout(data_layout)
         data_layout.addLayout(filter_Layout)
         data_layout.addWidget(self.tabs)
 
-        for btn in btns:
-            btn_layout.addWidget(btn)
-
-        btn_layout.addStretch()
-
-        # Logic
-        load_btn.clicked.connect(self.load_config)
-        save_btn.clicked.connect(self.save_config)
         self.filter_line.textChanged.connect(self.upate_section_filter)
 
         if DEBUG:
