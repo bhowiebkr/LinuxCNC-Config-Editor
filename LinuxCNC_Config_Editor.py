@@ -11,7 +11,7 @@ from lib.linuxcnc_config import LinuxCNCConfig
 from lib.linuxcnc_doc_reader import LinuxCNCDocs
 
 
-DEBUG = True
+DEBUG = False
 
 Docs = LinuxCNCDocs()
 
@@ -134,6 +134,8 @@ class Editor(QWidget):
         super(Editor, self).__init__(parent)
         self.setWindowTitle("LinuxCNC Config Editor")
 
+        self.workingFolder = None
+
         self.settings = QSettings("LinuxCNC_Config_Editor", "LinuxCNC_Config_Editor")
         self.config = None
 
@@ -145,6 +147,9 @@ class Editor(QWidget):
 
         try:
             self.restoreGeometry(self.settings.value("geometry"))
+            self.workingFolder = self.settings.value('working_folder')
+            #print(f'working folder set to: {self.workingFolder}')
+
         except Exception as e:
             logging.warning(
                 "Unable to load settings. First time opening the tool?\n" + str(e)
@@ -196,10 +201,15 @@ class Editor(QWidget):
             )
 
         else:
+
+            if self.workingFolder:
+                root = self.workingFolder
+            else:
+                root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             dialog = QFileDialog.getSaveFileName(
                 self,
                 "Save Config File",
-                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                root,
                 "LinuxCNC Config File (*.INI)",
             )
             save_path = dialog[0]
@@ -217,14 +227,20 @@ class Editor(QWidget):
             )
 
         else:
+
+            root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            if os.path.exists(self.workingFolder):
+                root = self.workingFolder
             dialog = QFileDialog.getOpenFileName(
                 self,
                 "Open Config File",
-                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                root,
                 "LinuxCNC Config File (*.INI)",
             )
             config_path = dialog[0]
             self.config = LinuxCNCConfig(config_path)
+            self.workingFolder = os.path.dirname(config_path)
+            #print(f'working folder {self.workingFolder}')
 
         # Build the GUI
         self.build_tabs(filter="")
@@ -250,6 +266,8 @@ class Editor(QWidget):
     def closeEvent(self, event):
         self.settings = QSettings("LinuxCNC_Config_Editor", "LinuxCNC_Config_Editor")
         self.settings.setValue("geometry", self.saveGeometry())
+        self.settings.setValue('working_folder', self.workingFolder)
+        #print(f'saving working folder: {self.workingFolder}')
         QWidget.closeEvent(self, event)
 
 
